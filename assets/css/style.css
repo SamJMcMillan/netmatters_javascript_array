@@ -7,10 +7,32 @@ body {
   font-family: "Montserrat", sans-serif;
 }
 
+.full-wrap {
+  display: flex;
+  justify-content: center;
+  column-gap: 30px;
+  margin-top: 50px;
+}
+
 .array-wrap {
+  background-color: rgb(53, 90, 90);
+  border-radius: 20px;
+  border: 5px solid rgb(9, 15, 15);
+  padding: 0 40px;
+  padding-bottom: 50px;
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+
+.selection-wrap {
+  background-color: rgb(18, 31, 31);
+  border-radius: 20px;
+  border: 5px solid rgb(9, 15, 15);
+  padding: 0 40px;
+  padding-bottom: 50px;
+  display: flex;
+  flex-direction: column;
 }
 
 h1 {
@@ -22,7 +44,7 @@ h1 {
 img {
   margin-top: 50px;
   border-radius: 10px;
-  border: 5px solid black;
+  border: 5px solid rgb(9, 15, 15);
 }
 
 button {

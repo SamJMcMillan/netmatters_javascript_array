@@ -12,30 +12,44 @@
     ></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <link href="assets/css/style.css" rel="stylesheet" />
-    <link rel="icon" type="image/x-icon" href="/images/logo.png" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/tiny-slider/2.9.4/tiny-slider.css"
+    />
+    <link rel="icon" type="image/x-icon" href="images/logo.png" />
   </head>
   <body>
     <main>
-      <div class="array-wrap">
-        <h1>JavaScript Array</h1>
-        <img src="https://picsum.photos/300/?random" id="current-image" />
-        <button type="reset" class="refresh" onClick="window.location.reload()">
-          Refresh
-        </button>
-        <form>
-          <input
-            type="email"
-            id="email-field"
-            class="email-input"
-            placeholder="Enter your email"
-          /><br />
-          <button type="reset" id="submit" onClick="validateForm()">
-            Choose this image
-          </button>
-          <p id="email-error">Please enter a valid email.</p>
-        </form>
+      <h1>JavaScript Array</h1>
+      <div class="full-wrap">
+        <section class="array-wrap">
+          <img src="" id="current-image" />
+          <button class="refresh" onClick="refreshImage()">Refresh</button>
+          <form>
+            <input
+              type="email"
+              id="email-field"
+              class="email-input"
+              placeholder="Enter your email"
+            /><br />
+            <button type="button" id="submit" onClick="validateForm()">
+              Choose this image
+            </button>
+            <p id="email-error">Please enter a valid email.</p>
+          </form>
+        </section>
+        <section class="selection-wrap">
+          <h2>Selected Images</h2>
+          <div class="slides-wrap">
+            <div class="slide-0">
+              <h3 class="email-name"></h3>
+              <div class="image-slider-0"></div>
+            </div>
+          </div>
+        </section>
       </div>
     </main>
-    <script src="assets/javascript/emailSub.js"></script>
+    <script src="assets/javascript/app.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tiny-slider/2.9.2/min/tiny-slider.js"></script>
   </body>
 </html>
