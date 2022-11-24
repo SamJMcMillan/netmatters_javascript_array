@@ -93,3 +93,7 @@ form {
   height: 30px;
   width: 300px;
 }
+
+.slider-img {
+  max-width: 150px;
+}

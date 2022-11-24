@@ -16,6 +16,21 @@ class ImageObject {
   }
 }
 
+loadOnStart = () => {
+  for (let i = 0; i < imageArray.length; i++) {
+    $("#slides-wrap").append(
+      "<h3 class='title-" + i + "'>" + imageArray[i].email + "</h3>"
+    );
+    $("#slides-wrap").append(
+      "<div class='tiny-slide slider-" + i + "'>",
+      "<div><img class='slider-img' src='" +
+        imageArray[i].images[imageArray[i].images.length - 1] +
+        "'></div>",
+      "</div>"
+    );
+  }
+};
+
 // resets the code when reset (a few lines above) is set to true.
 if (reset) {
   imageArray.push({ email: "", images: [] });
@@ -26,6 +41,7 @@ if (reset) {
   // If there is data in sessionStorage, update imageArray on page load.
 } else {
   imageArray = JSON.parse(sessionStorage.getItem("imageArray"));
+  loadOnStart();
 }
 
 // Hides the email popup by deault, and sets the image on the homepage.
@@ -50,7 +66,7 @@ validateForm = () => {
   }
 };
 
-function updateDatabase(email) {
+updateDatabase = (email) => {
   // constructs the currentImage data as a local variable for use in this function.
   const currentImg = $("#current-image").attr("src");
   // This variable will be used by the code to determine when a new object needs to
@@ -86,8 +102,44 @@ function updateDatabase(email) {
   // Updates the imageArray in the sessionStorage, so it is saved after a page refresh.
   sessionStorage.setItem("imageArray", JSON.stringify(imageArray));
 
+  constructSlides(email);
+};
+
+constructSlides = (email) => {
+  console.log(email);
+
+  // Like last function, the code is looping through every item in the array.
+  for (let i = 0; i < imageArray.length; i++) {
+    // The code checks whether the headers already exist or not.
+    // NEEDS TO MATCH emailInput
+    if ($(".title-" + i).text() === email) {
+      console.log($(".title-" + i).text());
+      console.log("poggers");
+      $(".slider-" + i).append(
+        "<div><img class='slider-img' src='" +
+          imageArray[i].images[imageArray[i].images.length - 1] +
+          "'></div>"
+      );
+    }
+    if ($(".title-" + i).length <= 0) {
+      console.log("he is pogging");
+      // Appends the title in the 'Selected Images' section of the page.
+      $("#slides-wrap").append(
+        "<h3 class='title-" + i + "'>" + imageArray[i].email + "</h3>"
+      );
+      // Appends the tiny slider in below the title.
+      $("#slides-wrap").append(
+        "<div class='tiny-slide slider-" + i + "'>",
+        "<div><img class='slider-img' src='" +
+          imageArray[i].images[imageArray[i].images.length - 1] +
+          "'></div>",
+        "</div>"
+      );
+    }
+  }
+
   // Randomizes the image again, using the same code as the refresh button.
   randomId = 1 + Math.floor(Math.random() * 1084);
   currentImage = "https://picsum.photos/id/" + randomId + "/300";
   document.getElementById("current-image").src = currentImage;
-}
+};
