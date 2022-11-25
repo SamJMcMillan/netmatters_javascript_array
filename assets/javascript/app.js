@@ -17,15 +17,21 @@ class ImageObject {
 }
 
 loadOnStart = () => {
+  // Checks if the placeholder email is the only thing in the array and ignores it if so
   if (imageArray[0].email === "") {
     console.log("nothing to see here");
   } else {
+    // Loops through each object in imageArray
     for (let i = 0; i < imageArray.length; i++) {
+      // for each item, create the email as a header
       $("#slides-wrap").append(
         "<h3 class='title-" + i + "'>" + imageArray[i].email + "</h3>"
       );
+      // And create the tiny-slider div
       $("#slides-wrap").append("<div class='tiny-slide slider-" + i + "'>");
+      // Loops through each item in the images array inside the imageArray objects
       for (let j = 0; j < imageArray[i].images.length; j++) {
+        // Creates the div inside the tiny slider divs that contains the images
         $(".slider-" + i).append(
           "<div><img class='slider-img' src='" +
             imageArray[i].images[j] +
