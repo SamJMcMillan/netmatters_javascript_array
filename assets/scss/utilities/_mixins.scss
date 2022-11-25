@@ -1,0 +1,32 @@
+@use "variables";
+
+@mixin button-hovers {
+  &:hover,
+  &:focus {
+    cursor: pointer;
+    background-color: rgb(22, 36, 36);
+  }
+}
+
+// -- Media Query ---------- //
+@mixin media-query($break) {
+  @if $break == "small" {
+    @media (min-width: $bpoint-sm) {
+      @content;
+    }
+  } @else if $break == "medium" {
+    @media (min-width: $bpoint-md) {
+      @content;
+    }
+  } @else if $break == "large" {
+    @media (min-width: $bpoint-lg) {
+      @content;
+    }
+  } @else if $break == "x-large" {
+    @media (min-width: $bpoint-xl) {
+      @content;
+    }
+  } @else {
+    @error "NO ARGUMENT VALID FROM $BREAK '#{$break}'";
+  }
+}
