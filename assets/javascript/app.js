@@ -1,5 +1,7 @@
 // Sets up essential variables for use in this code.
 const emailPopup = document.getElementById("email-error");
+const refreshBtn = document.getElementById("refresh");
+const chooseBtn = document.getElementById("submit");
 // As Picsum has a max id # of 1084, we are picking a random id from 1-1084.
 let randomId = 1 + Math.floor(Math.random() * 1084);
 let currentImage = "https://picsum.photos/id/" + randomId + "/300";
@@ -8,13 +10,39 @@ let imageArray = [];
 // Developer switch, for when I need to reset sessionStorage for testing.
 let reset = false;
 
-// Creates the class that will be used to construct the imageObjects later.
+// Creates the class that will be used toS construct the imageObjects later.
 class ImageObject {
   constructor(email, images) {
     this.email = email;
     this.images = images;
   }
 }
+
+UrlExists = (url, cb) => {
+  jQuery.ajax({
+    url: url,
+    dataType: "text",
+    type: "GET",
+    complete: function (xhr) {
+      if (typeof cb === "function") cb.apply(this, [xhr.status]);
+    },
+  });
+};
+
+// Code for the refresh button, which redoes the random image process above.
+refreshImage = () => {
+  randomId = 1 + Math.floor(Math.random() * 1084);
+  currentImage = `https://picsum.photos/id/${randomId}/300`;
+  document.getElementById("current-image").src = currentImage;
+  UrlExists(currentImage, function (status) {
+    if (status < 400) {
+      console.log("pass");
+    } else if (status >= 400) {
+      refreshImage();
+    }
+  });
+};
+refreshBtn.addEventListener("click", refreshImage);
 
 loadOnStart = () => {
   // Checks if the placeholder email is the only thing in the array and ignores it if so
@@ -41,15 +69,18 @@ loadOnStart = () => {
       }
     }
   }
+  refreshImage();
 };
 
 // resets the code when reset (a few lines above) is set to true.
 if (reset) {
   imageArray.push({ email: "", images: [] });
   sessionStorage.setItem("imageArray", JSON.stringify(imageArray));
+  refreshImage();
   // If there is nothing in sessionStorage, create the empty placeholder array.
 } else if (sessionStorage.getItem("imageArray") === null) {
   imageArray.push({ email: "", images: [] });
+  refreshImage();
   // If there is data in sessionStorage, update imageArray on page load.
 } else {
   imageArray = JSON.parse(sessionStorage.getItem("imageArray"));
@@ -58,14 +89,6 @@ if (reset) {
 
 // Hides the email popup by deault, and sets the image on the homepage.
 emailPopup.style.display = "none";
-document.getElementById("current-image").src = currentImage;
-
-// Code for the refresh button, which redoes the random image process above.
-refreshImage = () => {
-  randomId = 1 + Math.floor(Math.random() * 1084);
-  currentImage = "https://picsum.photos/id/" + randomId + "/300";
-  document.getElementById("current-image").src = currentImage;
-};
 
 // Standard email regex, code mostly borrowed from my portfolio project.
 validateForm = () => {
@@ -125,8 +148,6 @@ constructSlides = (email) => {
     // The code checks whether the headers already exist or not.
     // NEEDS TO MATCH emailInput
     if ($(".title-" + i).text() === email) {
-      console.log($(".title-" + i).text());
-      console.log("poggers");
       $(".slider-" + i).append(
         "<div><img class='slider-img' src='" +
           imageArray[i].images[imageArray[i].images.length - 1] +
@@ -134,7 +155,6 @@ constructSlides = (email) => {
       );
     }
     if ($(".title-" + i).length <= 0) {
-      console.log("he is pogging");
       // Appends the title in the 'Selected Images' section of the page.
       $("#slides-wrap").append(
         "<h3 class='title-" + i + "'>" + imageArray[i].email + "</h3>"
@@ -149,9 +169,6 @@ constructSlides = (email) => {
       );
     }
   }
-
-  // Randomizes the image again, using the same code as the refresh button.
-  randomId = 1 + Math.floor(Math.random() * 1084);
-  currentImage = "https://picsum.photos/id/" + randomId + "/300";
-  document.getElementById("current-image").src = currentImage;
+  refreshImage();
 };
+chooseBtn.addEventListener("click", validateForm);
