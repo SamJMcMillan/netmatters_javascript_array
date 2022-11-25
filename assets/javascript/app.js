@@ -18,25 +18,32 @@ class ImageObject {
   }
 }
 
+// This function returns a url's status code.
 UrlExists = (url, cb) => {
   jQuery.ajax({
+    // Prepares the properties of the url
     url: url,
     dataType: "text",
     type: "GET",
+    // the function below makes a xhr request to the url and returns it's status code
+    // The function inside UrlExists can then be completed where UrlExists is triggered
     complete: function (xhr) {
       if (typeof cb === "function") cb.apply(this, [xhr.status]);
     },
   });
 };
 
-// Code for the refresh button, which redoes the random image process above.
+// randomizes the image id and replaces the currentImage with it
 refreshImage = () => {
   randomId = 1 + Math.floor(Math.random() * 1084);
   currentImage = `https://picsum.photos/id/${randomId}/300`;
   document.getElementById("current-image").src = currentImage;
+  //Calls the status code checking function from line 22
   UrlExists(currentImage, function (status) {
+    // Tests if the status code is below 400, thus a success
     if (status < 400) {
       console.log("pass");
+      // Or above 400, a failure
     } else if (status >= 400) {
       refreshImage();
     }
@@ -53,18 +60,18 @@ loadOnStart = () => {
     for (let i = 0; i < imageArray.length; i++) {
       // for each item, create the email as a header
       $("#slides-wrap").append(
-        "<h3 class='title-" + i + "'>" + imageArray[i].email + "</h3>"
+        `<h3 class='title-${i}'>${imageArray[i].email}</h3>`
       );
       // And create the tiny-slider div
-      $("#slides-wrap").append("<div class='tiny-slide slider-" + i + "'>");
+      $("#slides-wrap").append(`<div class='tiny-slide slider-${i}'>`);
       // Loops through each item in the images array inside the imageArray objects
       for (let j = 0; j < imageArray[i].images.length; j++) {
         // Creates the div inside the tiny slider divs that contains the images
         $(".slider-" + i).append(
-          "<div><img class='slider-img' src='" +
-            imageArray[i].images[j] +
-            "'></div>",
-          "</div>"
+          `<div><img class='slider-img' src='
+            ${imageArray[i].images[j]}'>
+            </div>
+          </div>`
         );
       }
     }
@@ -149,23 +156,25 @@ constructSlides = (email) => {
     // NEEDS TO MATCH emailInput
     if ($(".title-" + i).text() === email) {
       $(".slider-" + i).append(
-        "<div><img class='slider-img' src='" +
-          imageArray[i].images[imageArray[i].images.length - 1] +
-          "'></div>"
+        `<div><img class='slider-img' src='${
+          imageArray[i].images[imageArray[i].images.length - 1]
+        }'></div>`
       );
     }
     if ($(".title-" + i).length <= 0) {
       // Appends the title in the 'Selected Images' section of the page.
       $("#slides-wrap").append(
-        "<h3 class='title-" + i + "'>" + imageArray[i].email + "</h3>"
+        `<h3 class='title-${i}'>${imageArray[i].email}</h3>`
       );
       // Appends the tiny slider in below the title.
       $("#slides-wrap").append(
-        "<div class='tiny-slide slider-" + i + "'>",
-        "<div><img class='slider-img' src='" +
-          imageArray[i].images[imageArray[i].images.length - 1] +
-          "'></div>",
-        "</div>"
+        `<div class='tiny-slide slider-${i}'>
+        <div>
+        <img class='slider-img' src='${
+          imageArray[i].images[imageArray[i].images.length - 1]
+        }'>
+          </div>
+        </div>`
       );
     }
   }
