@@ -17,17 +17,23 @@ class ImageObject {
 }
 
 loadOnStart = () => {
-  for (let i = 0; i < imageArray.length; i++) {
-    $("#slides-wrap").append(
-      "<h3 class='title-" + i + "'>" + imageArray[i].email + "</h3>"
-    );
-    $("#slides-wrap").append(
-      "<div class='tiny-slide slider-" + i + "'>",
-      "<div><img class='slider-img' src='" +
-        imageArray[i].images[imageArray[i].images.length - 1] +
-        "'></div>",
-      "</div>"
-    );
+  if (imageArray[0].email === "") {
+    console.log("nothing to see here");
+  } else {
+    for (let i = 0; i < imageArray.length; i++) {
+      $("#slides-wrap").append(
+        "<h3 class='title-" + i + "'>" + imageArray[i].email + "</h3>"
+      );
+      $("#slides-wrap").append("<div class='tiny-slide slider-" + i + "'>");
+      for (let j = 0; j < imageArray[i].images.length; j++) {
+        $(".slider-" + i).append(
+          "<div><img class='slider-img' src='" +
+            imageArray[i].images[j] +
+            "'></div>",
+          "</div>"
+        );
+      }
+    }
   }
 };
 
