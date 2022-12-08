@@ -1,16 +1,19 @@
 // Sets up essential variables for use in this code.
 const emailPopup = document.getElementById("email-error");
+const imgPopup = document.getElementById("image-error");
 const refreshBtn = document.getElementById("refresh");
 const chooseBtn = document.getElementById("submit");
 // As Picsum has a max id # of 1084, we are picking a random id from 1-1084.
 let randomId = 1 + Math.floor(Math.random() * 1084);
 let currentImage = "https://picsum.photos/id/" + randomId + "/300";
 let imageArray = [];
+// Used to determine whether the selected images need updating after the updateDatabase function
+let dueUpdate = false;
 
 // Developer switch, for when I need to reset sessionStorage for testing.
 let reset = false;
 
-// Creates the class that will be used toS construct the imageObjects later.
+// Creates the class that will be used to construct the imageObjects later.
 class ImageObject {
   constructor(email, images) {
     this.email = email;
@@ -96,6 +99,7 @@ if (reset) {
 
 // Hides the email popup by deault, and sets the image on the homepage.
 emailPopup.style.display = "none";
+imgPopup.style.display = "none";
 
 // Standard email regex, code mostly borrowed from my portfolio project.
 validateForm = () => {
@@ -107,6 +111,7 @@ validateForm = () => {
     updateDatabase(emailInput);
   }
 };
+chooseBtn.addEventListener("click", validateForm);
 
 updateDatabase = (email) => {
   // constructs the currentImage data as a local variable for use in this function.
@@ -120,24 +125,34 @@ updateDatabase = (email) => {
     // submitted is present, in order to prevent duplicates. It also checks if
     // the only object present is the blank placeholder object.
     if (imageArray[i].email === email || imageArray[i].email === "") {
-      // If the if statement is found to be true, then the following code triggers.
-      // Since the object that triggers the it statement *could* be the blank
-      // placeholder object, the email is set to the emailInput just in case.
-      imageArray[i].email = email;
-      // The image is then pushed to the image array in the imageObject.
-      imageArray[i].images.push(currentImg);
-      newObject = false;
-      // The code breaks the loop, so that it can't create duplicates
-      break;
+      if (imageArray[i].images.includes(currentImage)) {
+        $(imgPopup).slideDown(400).delay(2000).slideUp(400);
+        imageArray[i].email = email;
+        newObject = false;
+        dueUpdate = false;
+        console.log("image ignored");
+        break;
+      } else {
+        imageArray[i].email = email;
+        // The image is then pushed to the image array in the imageObject.
+        imageArray[i].images.push(currentImg);
+        newObject = false;
+        dueUpdate = true;
+        console.log("image saved");
+        // The code breaks the loop, so that it can't create duplicates
+        break;
+      }
+    } else {
+      // if no email of the same name is found, the newObject value is changed to true.
+      newObject = true;
     }
-    // if no email of the same name is found, the newObject value is changed to true.
-    newObject = true;
   }
 
   // if the newObject value is changed to true in the previous code, this code below triggers.
   if (newObject) {
     // Creates the new object and adds it to imageArray.
     const newObject = new ImageObject(email, [currentImg]);
+    dueUpdate = true;
     imageArray.push(newObject);
   }
 
@@ -149,35 +164,35 @@ updateDatabase = (email) => {
 
 constructSlides = (email) => {
   console.log(email);
-
-  // Like last function, the code is looping through every item in the array.
-  for (let i = 0; i < imageArray.length; i++) {
-    // The code checks whether the headers already exist or not.
-    // NEEDS TO MATCH emailInput
-    if ($(".title-" + i).text() === email) {
-      $(".slider-" + i).append(
-        `<div><img class='slider-img' src='${
-          imageArray[i].images[imageArray[i].images.length - 1]
-        }'></div>`
-      );
-    }
-    if ($(".title-" + i).length <= 0) {
-      // Appends the title in the 'Selected Images' section of the page.
-      $("#slides-wrap").append(
-        `<h3 class='title-${i}'>${imageArray[i].email}</h3>`
-      );
-      // Appends the tiny slider in below the title.
-      $("#slides-wrap").append(
-        `<div class='tiny-slide slider-${i}'>
-        <div>
-        <img class='slider-img' src='${
-          imageArray[i].images[imageArray[i].images.length - 1]
-        }'>
-          </div>
-        </div>`
-      );
+  if (dueUpdate === true) {
+    // Like last function, the code is looping through every item in the array.
+    for (let i = 0; i < imageArray.length; i++) {
+      // The code checks whether the headers already exist or not.
+      // NEEDS TO MATCH emailInput
+      console.log("selected images updated");
+      if ($(".title-" + i).text() === email) {
+        $(".slider-" + i).append(
+          `<div><img class='slider-img' src='${
+            imageArray[i].images[imageArray[i].images.length - 1]
+          }'></div>`
+        );
+      }
+      if ($(".title-" + i).length <= 0) {
+        // Appends the title in the 'Selected Images' section of the page.
+        $("#slides-wrap").append(
+          `<h3 class='title-${i}'>${imageArray[i].email}</h3>`
+        );
+        // Appends the tiny slider in below the title.
+        $("#slides-wrap").append(
+          `<div class='tiny-slide slider-${i}'>
+      <div>
+      <img class='slider-img' src='${
+        imageArray[i].images[imageArray[i].images.length - 1]
+      }'>
+        </div>
+      </div>`
+        );
+      }
     }
   }
-  refreshImage();
 };
-chooseBtn.addEventListener("click", validateForm);

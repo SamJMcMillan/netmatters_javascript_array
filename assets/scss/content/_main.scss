@@ -39,6 +39,7 @@ body {
   flex-direction: column;
   @include media-query(large) {
     padding: 0 40px;
+    width: 40vw;
   }
 }
 
@@ -91,7 +92,8 @@ form {
   flex-direction: column;
 }
 
-#email-error {
+#email-error,
+#image-error {
   text-align: center;
 }
 
